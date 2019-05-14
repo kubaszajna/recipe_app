@@ -9,27 +9,37 @@ class App extends Component {
   state = {
     recipes: recipes,
     url: "https://www.food2fork.com/api/search?key=6d0e18d120b24189882e599b491fb667",
+    base_url: "https://www.food2fork.com/api/search?key=6d0e18d120b24189882e599b491fb667",
     details_id: 35375,
     pageIndex: 1,
-    search: ""
+    search: "",
+    query: '&q=',
+    error: ''
   };
 
   async getRecipes() {
     try {
       const data = await fetch(this.state.url);
       const jsonData = await data.json();
-
-      this.setState({
-        recipes: jsonData.recipes
-      })
+      console.log(jsonData);
+      if (jsonData.recipes.length === 0) {
+        this.setState(() => {
+          return { error: 'Sorry, bad search without result.' }
+        })
+      }
+      else {
+        this.setState(() => {
+          return { recipes: jsonData.recipes }
+        })
+      }
     } catch (error) {
       console.log(error);
     }
   }
 
-  // componentDidMount() {
-  //   this.getRecipes();
-  // }
+  componentDidMount() {
+    this.getRecipes();
+  }
 
   displayPage = (index) => {
     switch (index) {
@@ -42,6 +52,7 @@ class App extends Component {
             value={this.state.search}
             handleChange={this.handleChange}
             handleSubmit={this.handleSubmit}
+            error={this.state.error}
           />)
       case 0:
         return (
@@ -69,12 +80,20 @@ class App extends Component {
       search: e.target.value
     }, () => {
       console.log(this.state.search);
-    })
-  }
+    }
+    );
+  };
 
   handleSubmit = e => {
     e.preventDefault();
-  }
+    const { base_url, query, search } = this.state;
+    this.setState(() => {
+      return { url: `${base_url}${query}${search}`, search: "" }
+    }, () => {
+      this.getRecipes();
+    })
+
+  };
 
   render() {
     // console.log(this.state.recipes);
