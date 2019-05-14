@@ -6,10 +6,10 @@ import RecipeSearch from "./RecipeSerach";
 export default class RecipeList extends Component {
 
     render() {
-        const { recipes } = this.props;
+        const { recipes, handleDetails, value, handleSubmit, handleChange } = this.props;
         return (
             <React.Fragment>
-                <RecipeSearch />
+                <RecipeSearch value={value} handleChange={handleChange} handleSubmit={handleSubmit} />
                 <div className="container my-5">
                     { /* title row*/}
                     <div className="row">
@@ -20,7 +20,8 @@ export default class RecipeList extends Component {
                     { /* end of title */}
                     <div className="row">
                         {recipes.map(recipe => {
-                            return <Recipe key={recipe.recipe_id} recipe={recipe} />;
+                            return <Recipe key={recipe.recipe_id} recipe={recipe}
+                                handleDetails={() => handleDetails(0, recipe.recipe_id)} />;
                         })
                         }
                     </div>
