@@ -45,8 +45,6 @@ export default class RecipeDetails extends Component {
         }
     }
 
-
-
     render() {
         const { image_url,
             publisher,
